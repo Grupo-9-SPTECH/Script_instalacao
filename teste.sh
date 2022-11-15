@@ -76,8 +76,6 @@ email varchar (45),
 check (email like '%@%' and email like '%.com%'),
 senha varchar (45)
 );
-select email, senha from usuario;
-
 
 
 insert into hospital values
