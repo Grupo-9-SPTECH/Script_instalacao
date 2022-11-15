@@ -35,21 +35,25 @@ if [ $? -eq 0 ];
 then
 	echo "Docker já está instalado"
 else
-	echo "Gostaria de instalar o Docker? e o banco TechHealth? (s/n)"
-	read inst
-	if [ \"$inst\" == \"s\" ];
+	# echo "Gostaria de instalar o Docker? e o banco TechHealth? (s/n)"
+	# read inst
+	# if [ \"$inst\" == \"s\" ];
 	then
 		sudo apt install docker.io -y
+fi
+
 	
 echo "Iniciando Docker"
 echo "Caminho: "
 pwd
 sudo systemctl start docker
 sudo systemctl enable docker
+sudo docker pull mysql:5.7
 
-cd ~/docker-mysql
-sudo docker-compose up -d
-sudo docker start CONTAINER_TOTEMDB
+sudo docker run -d -p 3306:3306 --name containerGrupo9 -e "MYSQL_DATABASE=grupo9"-e"MYSQL_ROOT_PASSWORD=urubu100" mysql:5.7
+# cd ~/docker-mysql
+# sudo docker-compose up -d
+# sudo docker start CONTAINER_TOTEMDB
 
 #comandos mysql
 sudo docker exec -it $(sudo docker ps -aqf "name=containerGrupo9") mysql -u root -p -B -N -e "
@@ -110,8 +114,7 @@ foreign key (fkMaquina) references maquina (idMaquina)
 );"
 
 echo Banco de dados Criado com Sucesso!
-fi
-fi
+
 
 cd home/ubuntu/Desktop
 git clone https://github.com/Grupo-9-SPTECH/APLICACAO_JAVA.git
