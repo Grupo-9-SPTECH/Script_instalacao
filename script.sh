@@ -34,52 +34,26 @@ fi
 docker --version
 if [ $? -eq 0 ];
 then
-	echo "Docker já está instalado"
+    echo "Docker já está instalado"
 else
-	echo "Gostaria de instalar o Docker? e o banco TechHealth? (s/n)"
-	read inst
-	if [ \"$inst\" == \"s\" ];
-	then
-		sudo apt install docker.io -y
-	fi	
-fi
+    echo "Gostaria de instalar o Docker e Banco TotomSystem? (s/n)"
+    read inst
+    if [ \"$inst\" == \"s\" ];
+    then
+        sudo apt install docker.io -y
 
-	
-# echo "Iniciando Docker"
-# echo "Caminho: "
-# pwd
+        echo "Iniciando Aplicação TotemSystem"
+        echo "Caminho: "
+        pwd
+        sudo systemctl start docker
+        sudo systemctl enable docker
+        cd docker-mysql/
+        sudo docker-compose up -d
+        sudo docker start CONTAINER_GRUPO9
 
-sudo systemctl start docker
-sudo systemctl enable docker
-
-#sudo docker ps -a
-
-# echo "Você deseja criar container? (s/n)"
-# read inst
-# if [ \"$inst\" == \"s\" ];
-
-sudo docker pull mysql:5.7
-
-sudo docker run -d -p 3306:3306 --name containerGrupo9 -e "MYSQL_DATABASE=grupo9" -e "MYSQL_ROOT_PASSWORD=urubu100" mysql:5.7
-echo container criado com sucesso!
-
-sudo docker cp /home/ubuntu/Desktop/script.sql containerGrupo9 :/db 
-echo tabelas criadas
-
-sudo docker exec -it containerGrupo9 bash
-mysql -u root
-
-
-#build é o docker file
-sudo docker build -t image-java .
-
-sudo docker run -d -t containerGrupo9 image-java
-
-# cd home/ubuntu/Desktop
-# git clone https://github.com/Grupo-9-SPTECH/APLICACAO_JAVA.git
-# git pull
-# cd APLICACAO_JAVA/tech-health-api-java/target/
-use grupo9;
+        sudo docker exec -it $(sudo docker ps -aqf "name=containerDB") mysql -u root -p -B -N -e "
+        create database grupo9;
+            use grupo9;
 
 	CREATE TABLE hospital (
 	idHospital int primary key auto_increment, -- IDENTITY(1,1),
@@ -129,3 +103,15 @@ momento varchar (50), -- datetime default current_timestamp
 fkMaquina int,
 foreign key (fkMaquina) references maquina (idMaquina)
 );
+ "
+            echo Banco de dados Criado com Sucesso!
+    fi
+fi
+
+wget https://github.com/Grupo-9-SPTECH/APLICACAO_JAVA/raw/main/tech-health-api-java/target/tech-health-api-java-1.0-SNAPSHOT-jar-with-dependencies.jar
+
+
+sudo docker build -t dockerfile .
+sudo docker run -it --rm --name tech-health-java dockerfile
+java -jar tech-health-api-java-1.0-SNAPSHOT-jar-with-dependencies.jar
+
