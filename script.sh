@@ -36,18 +36,19 @@ if [ $? -eq 0 ];
 then
     echo "Docker já está instalado"
 else
-    echo "Gostaria de instalar o Docker e Banco TotomSystem? (s/n)"
+    echo "Gostaria de instalar o Docker e Banco TechHealth? (s/n)"
     read inst
     if [ \"$inst\" == \"s\" ];
     then
         sudo apt install docker.io -y
 
-        echo "Iniciando Aplicação TotemSystem"
+        echo "Iniciando Aplicação TechHealth"
         echo "Caminho: "
         pwd
+
+        sudo docker pull mysql:5.7
         sudo systemctl start docker
         sudo systemctl enable docker
-        cd docker-mysql/
         sudo docker-compose up -d
         sudo docker start CONTAINER_GRUPO9
 
