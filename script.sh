@@ -113,6 +113,6 @@ wget https://github.com/Grupo-9-SPTECH/APLICACAO_JAVA/raw/main/tech-health-api-j
 
 
 sudo docker build -t dockerfile .
-sudo docker run -it --rm --name tech-health-java dockerfile
+sudo docker run  -d -t --name tech-health-java dockerfile
 java -jar tech-health-api-java-1.0-SNAPSHOT-jar-with-dependencies.jar
 
